@@ -1,25 +1,33 @@
 
 from pathlib import Path
+from celery.schedules import crontab
+import os
+from .app_vars import SECRET_KEY
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-)tz9pi6ts=wca^$brsa^r^&@t^9e&nna2f13$wd)bhlm$p*cd)'
-
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
-
-INSTALLED_APPS = [
+DEFAULT_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'inventory',
+    'django.contrib.staticfiles' 
 ]
+
+THIRD_PARTY_APPS = [
+    'rest_framework'
+]
+
+CUSTOM_APPS = [
+    'inventory'
+]
+
+INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,23 +62,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.core.wsgi.application'
 
-# ASGI
-ASGI_APPLICATION = 'core.core.asgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -87,10 +84,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -104,14 +97,8 @@ USE_L10N = True
 APPEND_SLASH = False
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -129,7 +116,6 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 
-from celery.schedules import crontab
 
 CELERY_BEAT_SCHEDULE = {
     'cleanup-expired-reservations': {

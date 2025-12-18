@@ -6,6 +6,9 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 from django.core.exceptions import ValidationError
 from .models import Product, Reservation, Order
+from inventory.services import transition_order
+from django.core.management import call_command
+
 
 class ProductModelTest(TestCase):
     def test_invariant(self):
@@ -26,7 +29,7 @@ class ReservationModelTest(TestCase):
             expires_at=timezone.now() + timedelta(minutes=10)
         )
         self.assertEqual(reservation.quantity, 2)
-        # Note: Stock update is done in view, not model
+        # Stock update is done in view, not model
 
     def test_expired_reservation(self):
         past = timezone.now() - timedelta(minutes=1)
@@ -43,7 +46,7 @@ class OrderStateMachineTest(TestCase):
         self.order = Order.objects.create(user=self.user)
 
     def test_valid_transitions(self):
-        from inventory.services import transition_order
+        
         transition_order(order=self.order, new_status='confirmed', actor=self.user)
         self.assertEqual(self.order.status, 'confirmed')
 
@@ -57,7 +60,6 @@ class OrderStateMachineTest(TestCase):
         self.assertEqual(self.order.status, 'delivered')
 
     def test_invalid_transitions(self):
-        from inventory.services import transition_order
         with self.assertRaises(ValidationError):
             transition_order(order=self.order, new_status='shipped', actor=self.user)
 
@@ -71,7 +73,6 @@ class OrderStateMachineTest(TestCase):
             transition_order(order=self.order, new_status='cancelled', actor=self.user)
 
     def test_cancel_transitions(self):
-        from inventory.services import transition_order
         transition_order(order=self.order, new_status='cancelled', actor=self.user)
         self.assertEqual(self.order.status, 'cancelled')
 
@@ -131,11 +132,9 @@ class CleanupCommandTest(TestCase):
             quantity=2,
             expires_at=timezone.now() - timedelta(minutes=1)
         )
-        # Simulate stock update as done in view
         self.product.available_stock -= 2
         self.product.reserved_stock += 2
         self.product.save()
-        from django.core.management import call_command
         call_command('cleanup_reservations')
         self.product.refresh_from_db()
         self.assertEqual(self.product.available_stock, 10)

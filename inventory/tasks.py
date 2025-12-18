@@ -1,18 +1,15 @@
 from celery import shared_task
 from django.db import transaction
 from django.utils import timezone
-from inventory.models import Reservation, AuditLog
+from inventory.models import Reservation
 from inventory.services import audit_log
 
 
 @shared_task
 def cleanup_expired_reservations():
-    """
-    Cleanup expired reservations: release stock and audit.
-    """
     expired_reservations = Reservation.objects.filter(
         expires_at__lt=timezone.now(),
-        order__isnull=True  # Only reservations not converted to orders
+        order__isnull=True   
     ).select_related('product')
 
     cleaned_count = 0
@@ -24,12 +21,12 @@ def cleanup_expired_reservations():
             product.save()
 
             audit_log(
-                'reservation_expired',
-                'Reservation',
-                str(reservation.pk),
-                {'quantity': reservation.quantity, 'product': str(product.pk)},
-                None,
-                None
+                action='reservation_expired',
+                object_type='Reservation',
+                object_id=str(reservation.pk),
+                old_value={'quantity': reservation.quantity, 'product': str(product.pk)},
+                new_value=None,
+                actor=None
             )
             reservation.delete()
             cleaned_count += 1

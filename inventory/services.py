@@ -3,15 +3,15 @@ from django.db import transaction
 from .models import Order, AuditLog
 
 
-# def audit_log(action, object_type, object_id, old_value, new_value, actor):
-#     AuditLog.objects.create(
-#         actor=actor,
-#         action=action,
-#         object_type=object_type,
-#         object_id=object_id,
-#         old_value=old_value,
-#         new_value=new_value,
-#     )
+def audit_log(action, object_type, object_id, old_value, new_value, actor):
+    AuditLog.objects.create(
+        actor=actor,
+        action=action,
+        object_type=object_type,
+        object_id=object_id,
+        old_value=old_value,
+        new_value=new_value,
+    )
 
 
 @transaction.atomic
