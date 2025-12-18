@@ -3,7 +3,7 @@ import django
 from django.utils import timezone
 from datetime import timedelta
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.core.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 django.setup()
 
 from inventory.models import Product, Reservation, Order, AuditLog

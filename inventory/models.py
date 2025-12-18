@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from core.core.abstract_model import BaseModel
+from core.abstract_model import BaseModel
 
 
 class Product(BaseModel):

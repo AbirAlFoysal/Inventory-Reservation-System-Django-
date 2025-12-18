@@ -39,10 +39,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
     # custom middleware
-    'core.core.middleware.RequestIDMiddleware',
+    'core.middleware.RequestIDMiddleware',
 ]
 
-ROOT_URLCONF = 'core.core.urls'
+ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
@@ -60,7 +60,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'core.core.wsgi.application'
+WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
@@ -104,7 +104,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": (
-        "core.core.renderers.RequestIDJSONRenderer",
+        "core.renderers.RequestIDJSONRenderer",
     )
 }
 

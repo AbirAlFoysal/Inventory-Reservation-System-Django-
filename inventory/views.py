@@ -7,7 +7,7 @@ from datetime import timedelta
 from .models import Product, Reservation, Order
 from .serializers import ProductSerializer, ReservationSerializer, OrderSerializer
 from .services import transition_order, audit_log
-from core.core.paginator import GlobalPagination
+from core.paginator import GlobalPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from django.db.models import F
