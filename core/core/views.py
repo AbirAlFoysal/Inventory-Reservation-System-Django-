@@ -1,16 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.core.management import call_command
 import os
-import sys
 import django
+from scripts.populate import populate_database
 
-# Ensure Django is set up
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.core.settings')
 django.setup()
-
-from scripts.populate import populate_database
 
 
 class HealthCheckAPI(APIView):

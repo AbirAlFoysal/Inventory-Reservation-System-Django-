@@ -103,9 +103,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-    ],
+    "DEFAULT_RENDERER_CLASSES": (
+        "core.core.renderers.RequestIDJSONRenderer",
+    )
 }
 
 # Celery Configuration
@@ -121,5 +121,28 @@ CELERY_BEAT_SCHEDULE = {
     'cleanup-expired-reservations': {
         'task': 'inventory.tasks.cleanup_expired_reservations',
         'schedule': crontab(minute='*/10'),  # Every 10 minutes
+    },
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "[%(asctime)s] [%(levelname)s] [request_id=%(request_id)s] %(name)s: %(message)s",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "request": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }

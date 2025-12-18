@@ -25,11 +25,11 @@ def transition_order(*, order: Order, new_status: str, actor):
     order.status = new_status
     order.save(update_fields=["status"])
 
-    AuditLog.objects.create(
-        actor=actor,
+    audit_log(
         action="status_changed",
         object_type="Order",
-        object_id=order.pk,
+        object_id=str(order.pk),
         old_value={"status": old_status},
         new_value={"status": new_status},
+        actor=actor,
     )

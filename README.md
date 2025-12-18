@@ -11,7 +11,7 @@ No user authentication or session management was implemented because the require
 SQLite was chosen as the database for simplicity and ease of setup, as no specific database requirements were mentioned in `Final Take-Home Task`.
 
 ### Background Tasks
-Celery was integrated for periodic cleanup of expired reservations using Celery Beat, providing a robust way to handle background jobs as per Task 1 requirements.
+Django 6 includes a built-in task management system, but I intentionally used Django 5.0 to leverage Celery Beat for periodic task scheduling, as required for cleaning up expired reservations.
 
 ### Containerization
 Docker and Docker Compose are provided for easy deployment and environment consistency.
@@ -129,7 +129,7 @@ Every API response includes a `request_id` (UUID) for tracing.
 
 ## Management Commands
 
-- `python manage.py cleanup_reservations` - Clean up expired reservations
+- `python manage.py cleanup_reservations` - Clean up expired reservations (alternative to Celery Beat; Celery is the primary method used)
 
 ## Tests
 

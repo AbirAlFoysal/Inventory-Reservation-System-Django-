@@ -1,16 +1,16 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import transaction
 from django.utils import timezone
 from datetime import timedelta
-from .models import Product, Reservation, Order, AuditLog
+from .models import Product, Reservation, Order
 from .serializers import ProductSerializer, ReservationSerializer, OrderSerializer
-from .services import transition_order
+from .services import transition_order, audit_log
 from core.core.paginator import GlobalPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
-import json
+from django.db.models import F
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -34,7 +34,6 @@ class ProductViewSet(viewsets.ModelViewSet):
     ]
     ordering = ['-created_at']
 
-from django.db.models import F
 
 class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
@@ -52,7 +51,6 @@ class ReservationViewSet(viewsets.ModelViewSet):
 
         try:
             with transaction.atomic():
-                # Attempt to decrement stock atomically
                 updated = Product.objects.filter(
                     pk=product_id,
                     available_stock__gte=quantity
@@ -60,29 +58,26 @@ class ReservationViewSet(viewsets.ModelViewSet):
                     available_stock=F('available_stock') - quantity,
                     reserved_stock=F('reserved_stock') + quantity
                 )
-
                 if not updated:
                     return Response({'error': 'Not enough stock or product not found'}, status=400)
 
-                # Fetch the product again for reference
                 product = Product.objects.get(pk=product_id)
-
                 expires_at = timezone.now() + timedelta(minutes=10)
                 reservation = Reservation.objects.create(
                     product=product,
                     quantity=quantity,
                     expires_at=expires_at
                 )
-
-                AuditLog.objects.create(
-                    actor=request.user if request.user.is_authenticated else None,
+                audit_log(
                     action='reservation_created',
                     object_type='Reservation',
                     object_id=str(reservation.pk),
+                    old_value=None,
                     new_value={
                         'product': str(product.pk),
                         'quantity': quantity
                     },
+                    actor=request.user if request.user.is_authenticated else None,
                 )
 
         except Product.DoesNotExist:

@@ -11,6 +11,6 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     path('populate/', PopulateAPI.as_view()),
     path('api/', include([
-        path('', include(v1_api_patterns)), # for v1, v2,...etc
+        path('', include(v1_api_patterns)), # for v1/, v2/,...etc
     ])),
 ]

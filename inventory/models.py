@@ -2,11 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from core.core.abstract_model import BaseModel
-import uuid
-import json
-from django.db import transaction
-from django.core.exceptions import ValidationError
-# Create your models here.
+
 
 class Product(BaseModel):
     name = models.CharField(max_length=255)
@@ -20,6 +16,7 @@ class Product(BaseModel):
     def __str__(self):
         return self.name
 
+    # since i am using sqlite, otherwise i would have used CheckConstraint
     def save(self, *args, **kwargs):
         if self.available_stock + self.reserved_stock != self.total_stock:
             raise ValueError("available_stock + reserved_stock must equal to total_stock")

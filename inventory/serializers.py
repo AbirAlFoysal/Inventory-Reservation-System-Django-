@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Product, Reservation, Order, OrderItem, AuditLog
-import uuid
+# import uuid
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
