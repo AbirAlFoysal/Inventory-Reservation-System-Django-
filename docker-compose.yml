@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - ./core/db.sqlite3:/app/core/db.sqlite3
+    environment:
+      - DJANGO_SETTINGS_MODULE=core.core.settings
+
+  worker:
+    build: .
+    command: celery -A core.core worker --loglevel=info
+    volumes:
+      - .:/app
+      - ./core/db.sqlite3:/app/core/db.sqlite3
+    environment:
+      - DJANGO_SETTINGS_MODULE=core.core.settings
+
+  beat:
+    build: .
+    command: celery -A core.core beat --loglevel=info
+    volumes:
+      - .:/app
+      - ./core/db.sqlite3:/app/core/db.sqlite3
+    environment:
+      - DJANGO_SETTINGS_MODULE=core.core.settings
