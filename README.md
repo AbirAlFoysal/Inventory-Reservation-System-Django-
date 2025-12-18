@@ -125,7 +125,7 @@ docker-compose up --build
 - `POST /api/orders/{id}/confirm/` - Confirm an order
 - `POST /api/orders/{id}/cancel/` - Cancel an order
 
-Every API response includes a `request_id` (UUID) for tracing.
+Every API response includes a `request_id` (UUID) for tracing in headers (via middleware), response body (via custom renderer), and logs (via logging configuration).
 
 ## Management Commands
 

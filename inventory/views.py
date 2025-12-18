@@ -11,6 +11,8 @@ from core.core.paginator import GlobalPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from django.db.models import F
+from django.core.exceptions import ValidationError
+
 
 
 class ProductViewSet(viewsets.ModelViewSet):
