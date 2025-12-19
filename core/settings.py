@@ -94,7 +94,7 @@ USE_TZ = True
 
 USE_L10N = True
 
-APPEND_SLASH = False
+# APPEND_SLASH = False
 
 
 STATIC_URL = 'static/'
