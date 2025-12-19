@@ -120,7 +120,7 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_BEAT_SCHEDULE = {
     'cleanup-expired-reservations': {
         'task': 'inventory.tasks.cleanup_expired_reservations',
-        'schedule': crontab(minute='*/10'),  # Every 10 minutes
+        'schedule': crontab(minute='*/5'),  # every 5 minutes
     },
 }
 

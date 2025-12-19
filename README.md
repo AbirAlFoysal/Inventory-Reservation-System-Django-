@@ -15,6 +15,12 @@ Django 6 includes a built-in task management system, but I intentionally used Dj
 
 ### Containerization
 Docker and Docker Compose are provided for easy deployment and environment consistency.
+Simply start the project using:
+```
+docker-compose up --build
+```
+### Populate
+Populate the project by using the API : `http://127.0.0.1:8000/api/products/`
 
 ## Features
 
@@ -62,28 +68,29 @@ Docker and Docker Compose are provided for easy deployment and environment consi
 In case of server crash, expired reservations can be cleaned up using the management command or Celery Beat. For immediate recovery, implement a background job to periodically clean up expired reservations every minute.
 
 #### Cleanup Strategy + Frequency
-Use Celery Beat to run cleanup every 5 minutes. For cron: `*/5 * * * * python manage.py cleanup_reservations`
+cleanup can be scheduled using Celery Beat every 5 minutes. For cron: `*/5 * * * * python manage.py cleanup_reservations`. Currently this project is using beat schedule with 5 min intervals.
 
 #### Multi-Warehouse Design
-Use a Warehouse model with many-to-many relationship to products. Stock levels per warehouse. Reservation locks specific warehouse stock.
+Using a Warehouse model means with many-to-many relationship to products. Stock levels per warehouse. Reservation locks specific warehouse stock. 
 
 #### Caching Strategy
-Cache product stock levels in Redis with 5-minute TTL. Invalidate on stock changes. Use cache-aside pattern.
+Cache product stock levels in Redis with 5-minute TTL. Invalidate on stock changes. Use cache-aside pattern. It helps to avoid db calls, or background task dependancy saving resources. Its a solid design pattern, but this assignment did not require it.
+
 
 #### Flow Diagram
 ```
 User Request Reservation
-    ↓
+        ↓
 Validate Stock Availability
-    ↓
+        ↓
 Lock Product Row (select_for_update)
-    ↓
+        ↓
 Deduct from Available, Add to Reserved
-    ↓
+        ↓
 Create Reservation (10 min expiry)
-    ↓
+        ↓
 Audit Log: Reservation Created
-    ↓
+        ↓
 Return Success with request_id
 ```
 
@@ -112,7 +119,7 @@ Return Success with request_id
    ```
 
 ## Docker Setup
-
+Suggested-
 ```bash
 docker-compose up --build
 ```
