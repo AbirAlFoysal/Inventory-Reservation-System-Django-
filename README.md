@@ -126,6 +126,8 @@ docker-compose up --build
 
 ## API Endpoints
 
+- `GET /` - Health check
+- `GET /populate/` - Populate the database with sample data
 - `POST /api/reservations/` - Create a reservation
 - `GET /api/products/` - List products
 - `GET /api/orders/` - List orders with filters and sorting
@@ -144,6 +146,9 @@ Run tests:
 ```bash
 python manage.py test
 ```
+Result:
+
+![alt text](image-1.png)
 
 ## Concurrency Test
 
@@ -151,6 +156,9 @@ Run the chaos test script:
 ```bash
 python scripts/chaos_test.py
 ```
+Result:
+
+![alt text](image.png)
 
 ## Database Indexes
 
